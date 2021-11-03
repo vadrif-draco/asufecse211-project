@@ -36,8 +36,9 @@ void DIO_init(int8 port, int8 pin, int8 dir) {
         case PORTF:
             dir == IN ? set_bit(GPIO_PORTF_DIR_R, pin) : clr_bit(GPIO_PORTF_DIR_R, pin);
             set_bit(GPIO_PORTF_DEN_R, pin);
-            GPIO_PORTF_CR_R = 0x1F;
-            GPIO_PORTF_LOCK_R = 0x4C4F434B;
+            GPIO_PORTF_CR_R = 0x1F; // FIXME: This should be done using set_bit for the specific pin
+            // TODO: Also do it for the other ports if required - not sure if it is; need to ask...
+            GPIO_PORTF_LOCK_R = 0x4C4F434B; // TODO: Need to ask if required for ports C & D too...
             break;
 
     }
@@ -58,6 +59,7 @@ void write_pin(int8 port, int8 pin, int8 value) {
     }
 
 }
+
 void write_port(int8 port, uint32 value) {
 
     switch (port) {
