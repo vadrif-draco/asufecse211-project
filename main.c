@@ -11,12 +11,12 @@ int main() {
 
         for (int pin = 1; pin <= 3; pin++) {
 
-            write_pin(GPIO_PORTF_DATA_R, pin, HIGH);
+            write_pin(PORTF, pin, HIGH);
             for (volatile int i = 0; i < 256000; i++); // delay
 
         }
 
-        for (int pin = 1; pin <= 3; pin++) write_pin(GPIO_PORTF_DATA_R, pin, LOW);
+        for (int pin = 1; pin <= 3; pin++) write_pin(PORTF, pin, LOW);
         for (volatile int i = 0; i < 512000; i++); // delay
 
     }

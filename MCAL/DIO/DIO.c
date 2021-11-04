@@ -9,36 +9,35 @@ void DIO_init(int8 port, int8 pin, int8 dir) {
     switch (port) {
 
         case PORTA:
-            dir == IN ? set_bit(GPIO_PORTA_DIR_R, pin) : clr_bit(GPIO_PORTA_DIR_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTA_DIR_R, pin) : clr_bit(GPIO_PORTA_DIR_R, pin);
             set_bit(GPIO_PORTA_DEN_R, pin);
             break;
 
         case PORTB:
-            dir == IN ? set_bit(GPIO_PORTB_DIR_R, pin) : clr_bit(GPIO_PORTB_DIR_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTB_DIR_R, pin) : clr_bit(GPIO_PORTB_DIR_R, pin);
             set_bit(GPIO_PORTB_DEN_R, pin);
             break;
 
         case PORTC:
-            dir == IN ? set_bit(GPIO_PORTC_DIR_R, pin) : clr_bit(GPIO_PORTC_DIR_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTC_DIR_R, pin) : clr_bit(GPIO_PORTC_DIR_R, pin);
             set_bit(GPIO_PORTC_DEN_R, pin);
             break;
 
         case PORTD:
-            dir == IN ? set_bit(GPIO_PORTD_DIR_R, pin) : clr_bit(GPIO_PORTD_DIR_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTD_DIR_R, pin) : clr_bit(GPIO_PORTD_DIR_R, pin);
             set_bit(GPIO_PORTD_DEN_R, pin);
             break;
 
         case PORTE:
-            dir == IN ? set_bit(GPIO_PORTE_DIR_R, pin) : clr_bit(GPIO_PORTE_DIR_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTE_DIR_R, pin) : clr_bit(GPIO_PORTE_DIR_R, pin);
             set_bit(GPIO_PORTE_DEN_R, pin);
             break;
 
         case PORTF:
-            dir == IN ? set_bit(GPIO_PORTF_DIR_R, pin) : clr_bit(GPIO_PORTF_DIR_R, pin);
-            set_bit(GPIO_PORTF_DEN_R, pin);
-            GPIO_PORTF_CR_R = 0x1F; // FIXME: This should be done using set_bit for the specific pin
-            // TODO: Also do it for the other ports if required - not sure if it is; need to ask...
+            set_bit(GPIO_PORTF_CR_R, pin); // TODO: Need to ask if required for other ports too...
             GPIO_PORTF_LOCK_R = 0x4C4F434B; // TODO: Need to ask if required for ports C & D too...
+            dir == OUT ? set_bit(GPIO_PORTF_DIR_R, pin) : clr_bit(GPIO_PORTF_DIR_R, pin);
+            set_bit(GPIO_PORTF_DEN_R, pin);
             break;
 
     }
