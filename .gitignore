@@ -58,3 +58,7 @@ dkms.conf
 
 # Workspace Configuration files
 .vscode
+*.ew*
+*.dep
+settings
+Debug
