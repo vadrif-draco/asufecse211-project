@@ -5,23 +5,19 @@
 
 int main() {
 
-    DIO_init(PORTF, 1, OUT);
-    DIO_init(PORTF, 2, OUT);
-    DIO_init(PORTF, 3, OUT);
+    for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT);
 
     while (1) {
 
         for (int pin = 1; pin <= 3; pin++) {
 
-            for (volatile int i = 0; i < 256000; i++);
             write_pin(GPIO_PORTF_DATA_R, pin, HIGH);
+            for (volatile int i = 0; i < 256000; i++); // delay
 
         }
 
-        for (volatile int i = 0; i < 512000; i++);
-        write_pin(GPIO_PORTF_DATA_R, 1, LOW);
-        write_pin(GPIO_PORTF_DATA_R, 2, LOW);
-        write_pin(GPIO_PORTF_DATA_R, 3, LOW);
+        for (int pin = 1; pin <= 3; pin++) write_pin(GPIO_PORTF_DATA_R, pin, LOW);
+        for (volatile int i = 0; i < 512000; i++); // delay
 
     }
 
