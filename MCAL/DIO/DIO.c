@@ -73,3 +73,32 @@ void write_port(int8 port, uint32 value) {
     }
 
 }
+
+
+int8 read_pin(int8 port, int8 pin){
+  
+      switch (port) {
+        
+        case PORTA: return get_bit(GPIO_PORTA_DATA_R, pin); break;
+        case PORTB: return get_bit(GPIO_PORTB_DATA_R, pin); break;
+        case PORTC: return get_bit(GPIO_PORTC_DATA_R, pin); break;
+        case PORTD: return get_bit(GPIO_PORTD_DATA_R, pin); break;
+        case PORTE: return get_bit(GPIO_PORTE_DATA_R, pin); break;
+        case PORTF: return get_bit(GPIO_PORTF_DATA_R, pin); break;
+
+    }
+}
+
+uint32 read_port(int8 port){
+  
+      switch (port) {
+
+        case PORTA: return GPIO_PORTA_DATA_R; break;
+        case PORTB: return GPIO_PORTB_DATA_R; break;
+        case PORTC: return GPIO_PORTC_DATA_R; break;
+        case PORTD: return GPIO_PORTD_DATA_R; break;
+        case PORTE: return GPIO_PORTE_DATA_R; break;
+        case PORTF: return GPIO_PORTF_DATA_R; break;
+
+    }
+}

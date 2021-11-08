@@ -22,4 +22,7 @@ void DIO_init(int8 port, int8 pin, int8 dir);
 void write_pin(int8 port, int8 pin, int8 value);
 void write_port(int8 port, uint32 value);
 
+int8 read_pin(int8 port, int8 pin);
+uint32 read_port(int8 port);
+
 #endif // DIO_H
