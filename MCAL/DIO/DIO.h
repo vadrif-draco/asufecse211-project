@@ -17,6 +17,8 @@
 #define OUT     0
 #define LOW     0
 #define HIGH    1
+#define PUON    0 // Pull-up on
+#define PUOFF   1 // Pull-up off
 
 void DIO_init(int8 port, int8 pin, int8 dir);
 void write_pin(int8 port, int8 pin, int8 value);

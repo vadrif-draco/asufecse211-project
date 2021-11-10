@@ -36,12 +36,49 @@ void lab4A_task1() {
 
     while (1) {
 
-        if (!read_pin(PORTF, 0)) switch0_held = 0;
-        if (!read_pin(PORTF, 4)) switch4_held = 0;
+        // If PORTF pin0/4 (aka switch1/2) is off (pull-up mode)...
+        if (read_pin(PORTF, 0) == PUOFF) {
 
-        write_pin(PORTF, 3, read_pin(PORTF, 0) && read_pin(PORTF, 4) ? HIGH : LOW);
-        if (read_pin(PORTF, 0) && !switch0_held) { tgl_bit(GPIO_PORTF_DATA_R, 1); switch0_held = 1; }
-        if (read_pin(PORTF, 4) && !switch4_held) { tgl_bit(GPIO_PORTF_DATA_R, 2); switch4_held = 1; }
+            delay(80000); // Delay to soft-debounce then re-check; if still off, remove "held" state
+            if (read_pin(PORTF, 0) == PUOFF) switch0_held = 0;
+
+        }
+
+        if (read_pin(PORTF, 4) == PUOFF) {
+
+            delay(80000);
+            if (read_pin(PORTF, 0) == PUOFF) switch4_held = 0;
+
+        }
+
+        // Write on PORTF pin3 (green LED) HIGH if both switches are held, otherwise off
+        write_pin(PORTF, 3, switch0_held && switch4_held ? HIGH : LOW);
+
+        // If PORTF pin0/4 (aka switch1/2) is on (pull-up mode) for the first time (i.e., not currently held)
+        // Perform the soft-debounce check, set their "held" state, then toggle their respective LED (red, blue)
+        if (read_pin(PORTF, 0) == PUON && !switch0_held) {
+
+            delay(80000);
+            if (read_pin(PORTF, 0) == PUON && !switch0_held) {
+
+                switch0_held = 1;
+                tgl_bit(GPIO_PORTF_DATA_R, 1);
+
+            }
+
+        }
+
+        if (read_pin(PORTF, 4) == PUON && !switch4_held) {
+
+            delay(80000);
+            if (read_pin(PORTF, 4) == PUON && !switch4_held) {
+
+                switch4_held = 1;
+                tgl_bit(GPIO_PORTF_DATA_R, 2);
+
+            }
+
+        }
 
     }
 
@@ -55,12 +92,48 @@ void lab4A_task2() {
 
     while (1) {
 
-        if (!read_pin(PORTF, 0)) switch0_held = 0;
-        if (!read_pin(PORTF, 4)) switch4_held = 0;
+        // If PORTF pin0/4 (aka switch1/2) is off (pull-up mode)...
+        if (read_pin(PORTF, 0) == PUOFF) {
 
-        if (read_pin(PORTF, 0) && !switch0_held) { led_state = (led_state + 1) % 4; switch0_held = 1; }
-        if (read_pin(PORTF, 4) && !switch4_held) { led_state = (led_state + 4 - 1) % 4; switch4_held = 1; }
+            delay(80000); // Delay to soft-debounce then re-check; if still off, remove "held" state
+            if (read_pin(PORTF, 0) == PUOFF) switch0_held = 0;
 
+        }
+
+        if (read_pin(PORTF, 4) == PUOFF) {
+
+            delay(80000);
+            if (read_pin(PORTF, 0) == PUOFF) switch4_held = 0;
+
+        }
+
+        // If PORTF pin0/4 (aka switch1/2) is on (pull-up mode) for the first time (i.e., not currently held)
+        // Perform the soft-debounce check, set their "held" state, then toggle their respective LED (red, blue)
+        if (read_pin(PORTF, 0) == PUON && !switch0_held) {
+
+            delay(80000);
+            if (read_pin(PORTF, 0) == PUON && !switch0_held) {
+
+                switch0_held = 1;
+                led_state = (led_state + 1) % 4;
+
+            }
+
+        }
+
+        if (read_pin(PORTF, 4) == PUON && !switch4_held) {
+
+            delay(80000);
+            if (read_pin(PORTF, 4) == PUON && !switch4_held) {
+
+                switch4_held = 1;
+                led_state = (led_state + 4 - 1) % 4;
+
+            }
+
+        }
+
+        // In addition, according to led_state, decide which LED(s) to turn on
         switch (led_state) {
 
             case 0: write_port(PORTF, 0xE); break;
@@ -84,7 +157,7 @@ int main() {
     // lab3B_task2();
     // lab3R_task1();
     // lab4A_task1();
-    lab4A_task2();
+    // lab4A_task2();
 
     return 0;
 
