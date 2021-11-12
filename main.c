@@ -51,7 +51,7 @@ void lab4A_task1() {
 
         }
 
-        // Write on PORTF pin3 (green LED) HIGH if both switches are held, otherwise off
+        // Write on PORTF pin3 (green LED) HIGH if both switches are held, otherwise LOW
         write_pin(PORTF, 3, switch0_held && switch4_held ? HIGH : LOW);
 
         // If PORTF pin0/4 (aka switch1/2) is on (pull-up mode) for the first time (i.e., not currently held)
@@ -62,7 +62,7 @@ void lab4A_task1() {
             if (read_pin(PORTF, 0) == PUON && !switch0_held) {
 
                 switch0_held = 1;
-                tgl_bit(GPIO_PORTF_DATA_R, 1);
+                tgl_bit(GPIO_PORTF_DATA_R, 1); // TODO: Needs to be abstracted in MCAL layer
 
             }
 
@@ -74,7 +74,7 @@ void lab4A_task1() {
             if (read_pin(PORTF, 4) == PUON && !switch4_held) {
 
                 switch4_held = 1;
-                tgl_bit(GPIO_PORTF_DATA_R, 2);
+                tgl_bit(GPIO_PORTF_DATA_R, 2); // TODO: Needs to be abstracted in MCAL layer
 
             }
 
@@ -148,18 +148,18 @@ void lab4A_task2() {
 
 }
 
-int main() {
+void main() {
 
     for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT); // LED pins
     DIO_init(PORTF, 0, IN); DIO_init(PORTF, 4, IN); // Switch pins
-    GPIO_PORTF_PUR_R = 0x11; // HACK: PDR should be used, but it doesn't work
+    GPIO_PORTF_PUR_R = 0x11; // It would be more logical to use PDR here...
+    //...but the launchpad's switch is hard-wired to be set in pull-up mode
+    // TODO: Need to abstract this register assignment in the MCAL layer
 
-    // lab3B_task2();
+    lab3B_task2();
     // lab3R_task1();
     // lab4A_task1();
     // lab4A_task2();
-
-    return 0;
 
 }
 

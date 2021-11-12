@@ -9,33 +9,64 @@ void DIO_init(int8 port, int8 pin, int8 dir) {
     switch (port) {
 
         case PORTA:
+            /*
+            The GPIOLOCK register enables write access to the GPIOCR register.
+            Writing 0x4C4F434B to the GPIOLOCK register unlocks the GPIOCR register.
+            Writing any other value to the GPIOLOCK register re-enables the locked state.
+            */
+            GPIO_PORTA_LOCK_R = 0x4C4F434B;
+            /*
+            The GPIOCR register is the commit register.
+            The value of the GPIOCR register determines...
+            ...which bits of GPIOAFSEL/GPIOPUR/GPIOPDR/GPIODEN registers are committed...
+            ...when a write to these registers is performed.
+
+            If a bit in the GPIOCR register is cleared...
+            ...the data being written to the corresponding bit in these registers...
+            ...cannot be committed and retains its previous value.
+
+            If a bit in the GPIOCR register is set...
+            ...the data being written to the corresponding bit in these registers...
+            ...is committed to the register and reflects the new value.
+            */
+            set_bit(GPIO_PORTA_CR_R, pin);
+            // If pin to be initialized as output, set corresponding bit, otherwise clear bit.
             dir == OUT ? set_bit(GPIO_PORTA_DIR_R, pin) : clr_bit(GPIO_PORTA_DIR_R, pin);
+            // Finally, enable digital operations on pin.
             set_bit(GPIO_PORTA_DEN_R, pin);
             break;
 
         case PORTB:
+            GPIO_PORTB_LOCK_R = 0x4C4F434B;
+            set_bit(GPIO_PORTB_CR_R, pin);
             dir == OUT ? set_bit(GPIO_PORTB_DIR_R, pin) : clr_bit(GPIO_PORTB_DIR_R, pin);
             set_bit(GPIO_PORTB_DEN_R, pin);
             break;
 
         case PORTC:
+            GPIO_PORTC_LOCK_R = 0x4C4F434B;
+            set_bit(GPIO_PORTC_CR_R, pin);
             dir == OUT ? set_bit(GPIO_PORTC_DIR_R, pin) : clr_bit(GPIO_PORTC_DIR_R, pin);
             set_bit(GPIO_PORTC_DEN_R, pin);
             break;
 
         case PORTD:
+            GPIO_PORTD_LOCK_R = 0x4C4F434B;
+            set_bit(GPIO_PORTD_CR_R, pin);
             dir == OUT ? set_bit(GPIO_PORTD_DIR_R, pin) : clr_bit(GPIO_PORTD_DIR_R, pin);
             set_bit(GPIO_PORTD_DEN_R, pin);
             break;
 
         case PORTE:
+            GPIO_PORTE_LOCK_R = 0x4C4F434B;
+            set_bit(GPIO_PORTE_CR_R, pin);
             dir == OUT ? set_bit(GPIO_PORTE_DIR_R, pin) : clr_bit(GPIO_PORTE_DIR_R, pin);
             set_bit(GPIO_PORTE_DEN_R, pin);
             break;
 
         case PORTF:
-            set_bit(GPIO_PORTF_CR_R, pin); // TODO: Need to ask if required for other ports too...
-            GPIO_PORTF_LOCK_R = 0x4C4F434B; // TODO: Need to ask if required for ports C & D too...
+            GPIO_PORTF_LOCK_R = 0x4C4F434B;
+            set_bit(GPIO_PORTF_CR_R, pin);
             dir == OUT ? set_bit(GPIO_PORTF_DIR_R, pin) : clr_bit(GPIO_PORTF_DIR_R, pin);
             set_bit(GPIO_PORTF_DEN_R, pin);
             break;
@@ -87,6 +118,7 @@ int8 read_pin(int8 port, int8 pin) {
         default: return 2;
 
     }
+
 }
 
 uint32 read_port(int8 port) {
@@ -102,4 +134,5 @@ uint32 read_port(int8 port) {
         default: return 2;
 
     }
+
 }
