@@ -1,7 +1,7 @@
 #include "MCAL/DIO/DIO.h" // Header file containing the DIO abstraction layer functions and definitions
-#include "HAL/KeyPad.h" // Header file containg
-#include "HAL/LCD.h"
-#include "queue.h"
+#include "HAL/KeyPad.h" // Header file containing the Keypad interfacing implementation
+#include "HAL/LCD.h" // Header file containing the LCD screen interfacing implementation
+#include "queue.h" // Linked list queue data structure to be used in simple calculator
 #include <stdio.h> // TODO: Remove when you buy an LCD
 
 void lab3B_task2();
