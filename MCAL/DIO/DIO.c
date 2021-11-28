@@ -30,46 +30,86 @@ void DIO_init(int8 port, int8 pin, int8 dir) {
             ...is committed to the register and reflects the new value.
             */
             set_bit(GPIO_PORTA_CR_R, pin);
+            // Enable digital operations on pin.
+            set_bit(GPIO_PORTA_DEN_R, pin);
+            // Then setup the control registers for the pin.
             // If pin to be initialized as output, set corresponding bit, otherwise clear bit.
             dir == OUT ? set_bit(GPIO_PORTA_DIR_R, pin) : clr_bit(GPIO_PORTA_DIR_R, pin);
-            // Finally, enable digital operations on pin.
-            set_bit(GPIO_PORTA_DEN_R, pin);
+            // Clear open-drain, pull-up, and pull-down registers (use DIO_init_f to set them).
+            clr_bit(GPIO_PORTA_ODR_R, pin);
+            clr_bit(GPIO_PORTA_PUR_R, pin);
+            clr_bit(GPIO_PORTA_PDR_R, pin);
             break;
 
         case PORTB:
             GPIO_PORTB_LOCK_R = 0x4C4F434B;
             set_bit(GPIO_PORTB_CR_R, pin);
-            dir == OUT ? set_bit(GPIO_PORTB_DIR_R, pin) : clr_bit(GPIO_PORTB_DIR_R, pin);
             set_bit(GPIO_PORTB_DEN_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTB_DIR_R, pin) : clr_bit(GPIO_PORTB_DIR_R, pin);
+            clr_bit(GPIO_PORTB_ODR_R, pin);
+            clr_bit(GPIO_PORTB_PUR_R, pin);
+            clr_bit(GPIO_PORTB_PDR_R, pin);
             break;
 
         case PORTC:
             GPIO_PORTC_LOCK_R = 0x4C4F434B;
             set_bit(GPIO_PORTC_CR_R, pin);
-            dir == OUT ? set_bit(GPIO_PORTC_DIR_R, pin) : clr_bit(GPIO_PORTC_DIR_R, pin);
             set_bit(GPIO_PORTC_DEN_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTC_DIR_R, pin) : clr_bit(GPIO_PORTC_DIR_R, pin);
+            clr_bit(GPIO_PORTC_ODR_R, pin);
+            clr_bit(GPIO_PORTC_PUR_R, pin);
+            clr_bit(GPIO_PORTC_PDR_R, pin);
             break;
 
         case PORTD:
             GPIO_PORTD_LOCK_R = 0x4C4F434B;
             set_bit(GPIO_PORTD_CR_R, pin);
-            dir == OUT ? set_bit(GPIO_PORTD_DIR_R, pin) : clr_bit(GPIO_PORTD_DIR_R, pin);
             set_bit(GPIO_PORTD_DEN_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTD_DIR_R, pin) : clr_bit(GPIO_PORTD_DIR_R, pin);
+            clr_bit(GPIO_PORTD_ODR_R, pin);
+            clr_bit(GPIO_PORTD_PUR_R, pin);
+            clr_bit(GPIO_PORTD_PDR_R, pin);
             break;
 
         case PORTE:
             GPIO_PORTE_LOCK_R = 0x4C4F434B;
             set_bit(GPIO_PORTE_CR_R, pin);
-            dir == OUT ? set_bit(GPIO_PORTE_DIR_R, pin) : clr_bit(GPIO_PORTE_DIR_R, pin);
             set_bit(GPIO_PORTE_DEN_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTE_DIR_R, pin) : clr_bit(GPIO_PORTE_DIR_R, pin);
+            clr_bit(GPIO_PORTE_ODR_R, pin);
+            clr_bit(GPIO_PORTE_PUR_R, pin);
+            clr_bit(GPIO_PORTE_PDR_R, pin);
             break;
 
         case PORTF:
             GPIO_PORTF_LOCK_R = 0x4C4F434B;
             set_bit(GPIO_PORTF_CR_R, pin);
-            dir == OUT ? set_bit(GPIO_PORTF_DIR_R, pin) : clr_bit(GPIO_PORTF_DIR_R, pin);
             set_bit(GPIO_PORTF_DEN_R, pin);
+            dir == OUT ? set_bit(GPIO_PORTF_DIR_R, pin) : clr_bit(GPIO_PORTF_DIR_R, pin);
+            clr_bit(GPIO_PORTF_ODR_R, pin);
+            clr_bit(GPIO_PORTF_PUR_R, pin);
+            clr_bit(GPIO_PORTF_PDR_R, pin);
             break;
+
+    }
+
+}
+
+void DIO_init_f(int8 port, int8 pin, int8 dir, uint16 flag) {
+
+    DIO_init(port, pin, dir); // Do the basic initialization first
+
+    switch (port) {
+
+        // "flag" has values that are equivalent to the raw register offset value
+        // The GPIO_DATA_BITS pointer is of uint32_t datatype, pointer arithmetic would occur
+        // So I need to divide the flag offset by that value so I could add them only numerically
+        case PORTA: set_bit(*(GPIO_PORTA_DATA_BITS_R + flag / sizeof(uint32_t)), pin); break;
+        case PORTB: set_bit(*(GPIO_PORTB_DATA_BITS_R + flag / sizeof(uint32_t)), pin); break;
+        case PORTC: set_bit(*(GPIO_PORTC_DATA_BITS_R + flag / sizeof(uint32_t)), pin); break;
+        case PORTD: set_bit(*(GPIO_PORTD_DATA_BITS_R + flag / sizeof(uint32_t)), pin); break;
+        case PORTE: set_bit(*(GPIO_PORTE_DATA_BITS_R + flag / sizeof(uint32_t)), pin); break;
+        case PORTF: set_bit(*(GPIO_PORTF_DATA_BITS_R + flag / sizeof(uint32_t)), pin); break;
 
     }
 
