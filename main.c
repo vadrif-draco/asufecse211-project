@@ -4,6 +4,7 @@
 #include "queue.h" // Linked list queue data structure to be used in simple calculator
 #include <stdio.h> // TODO: Remove when you buy an LCD
 
+void lab3A_tasks();
 void lab3B_task2();
 void lab3R_task1();
 void lab4A_task1();
@@ -15,6 +16,7 @@ void lab5B_task2();
 
 void main() {
 
+    // lab3A_tasks();
     // lab3B_task2();
     // lab3R_task1();
     // lab4A_task1();
@@ -118,13 +120,12 @@ void lab5B_task1() {
 
 }
 
-// TODO: Need to look into the functions below for anything that needs to be PUR
-
 void lab4R_task2() {
 
-    uint8 led_state = 0; // 0 = all, 1 = R, 2 = G, 3 = B
-    uint8 switch0_held = 0;
-    uint8 switch4_held = 0;
+    for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT); // LED pins set as output
+    DIO_init_f(PORTF, 0, IN, PUR); DIO_init_f(PORTF, 4, IN, PUR); // Switch pins set as input in PUR mode
+    uint8 switch_F0_held = 0, switch_F4_held = 0; // Variables to store the state of the two PORTF switches 
+    uint8 led_state = 0; // Variable to store the state of the LEDS, mapped as follows: 0 = all, 1 = R, 2 = G, 3 = B
 
     while (1) {
 
@@ -132,44 +133,44 @@ void lab4R_task2() {
         if (read_pin(PORTF, 0) == PULOW) {
 
             delay(80000); // Delay to soft-debounce then re-check; if still off, remove "held" state
-            if (read_pin(PORTF, 0) == PULOW) switch0_held = 0;
+            if (read_pin(PORTF, 0) == PULOW) switch_F0_held = 0;
 
         }
 
         if (read_pin(PORTF, 4) == PULOW) {
 
             delay(80000);
-            if (read_pin(PORTF, 0) == PULOW) switch4_held = 0;
+            if (read_pin(PORTF, 4) == PULOW) switch_F4_held = 0;
 
         }
 
         // If PORTF pin0/4 (aka switch1/2) is on (pull-up mode) for the first time (i.e., not currently held)
         // Perform the soft-debounce check, set their "held" state, then toggle their respective LED (red, blue)
-        if (read_pin(PORTF, 0) == PUHIGH && !switch0_held) {
+        if (read_pin(PORTF, 0) == PUHIGH && !switch_F0_held) {
 
             delay(80000);
-            if (read_pin(PORTF, 0) == PUHIGH && !switch0_held) {
+            if (read_pin(PORTF, 0) == PUHIGH && !switch_F0_held) {
 
-                switch0_held = 1;
+                switch_F0_held = 1;
                 led_state = (led_state + 1) % 4;
 
             }
 
         }
 
-        if (read_pin(PORTF, 4) == PUHIGH && !switch4_held) {
+        if (read_pin(PORTF, 4) == PUHIGH && !switch_F4_held) {
 
             delay(80000);
-            if (read_pin(PORTF, 4) == PUHIGH && !switch4_held) {
+            if (read_pin(PORTF, 4) == PUHIGH && !switch_F4_held) {
 
-                switch4_held = 1;
+                switch_F4_held = 1;
                 led_state = (led_state + 4 - 1) % 4;
 
             }
 
         }
 
-        if (switch0_held && switch4_held) led_state = 0;
+        if (switch_F0_held && switch_F4_held) led_state = 0;
 
         // In addition, according to led_state, decide which LED(s) to turn on
         switch (led_state) {
@@ -189,6 +190,10 @@ void lab4R_task2() {
 void lab4R_task1() {
 
 #define SIZE 10
+
+    for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT); // LED pins set as output
+    DIO_init_f(PORTF, 0, IN, PUR); DIO_init_f(PORTF, 4, IN, PUR); // Switch pins set as input in PUR mode
+    // It would be more logical to use PDR here, but the launchpad's switches are hard-wired to be set in PUR mode
 
     int arr[SIZE];
     for (int i = 0; i < SIZE; ++i) arr[i] = i;
@@ -243,9 +248,10 @@ void lab4R_task1() {
 
 void lab4A_task2() {
 
-    uint8 led_state = 0; // 0 = all, 1 = R, 2 = G, 3 = B
-    uint8 switch0_held = 0;
-    uint8 switch4_held = 0;
+    for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT); // LED pins set as output
+    DIO_init_f(PORTF, 0, IN, PUR); DIO_init_f(PORTF, 4, IN, PUR); // Switch pins set as input in PUR mode
+    uint8 switch_F0_held = 0, switch_F4_held = 0; // Variables to store the state of the two PORTF switches 
+    uint8 led_state = 0; // Variable to store the state of the LEDS, mapped as follows: 0 = all, 1 = R, 2 = G, 3 = B
 
     while (1) {
 
@@ -253,37 +259,37 @@ void lab4A_task2() {
         if (read_pin(PORTF, 0) == PULOW) {
 
             delay(80000); // Delay to soft-debounce then re-check; if still off, remove "held" state
-            if (read_pin(PORTF, 0) == PULOW) switch0_held = 0;
+            if (read_pin(PORTF, 0) == PULOW) switch_F0_held = 0;
 
         }
 
         if (read_pin(PORTF, 4) == PULOW) {
 
             delay(80000);
-            if (read_pin(PORTF, 0) == PULOW) switch4_held = 0;
+            if (read_pin(PORTF, 4) == PULOW) switch_F4_held = 0;
 
         }
 
         // If PORTF pin0/4 (aka switch1/2) is on (pull-up mode) for the first time (i.e., not currently held)
         // Perform the soft-debounce check, set their "held" state, then toggle their respective LED (red, blue)
-        if (read_pin(PORTF, 0) == PUHIGH && !switch0_held) {
+        if (read_pin(PORTF, 0) == PUHIGH && !switch_F0_held) {
 
             delay(80000);
-            if (read_pin(PORTF, 0) == PUHIGH && !switch0_held) {
+            if (read_pin(PORTF, 0) == PUHIGH && !switch_F0_held) {
 
-                switch0_held = 1;
+                switch_F0_held = 1;
                 led_state = (led_state + 1) % 4;
 
             }
 
         }
 
-        if (read_pin(PORTF, 4) == PUHIGH && !switch4_held) {
+        if (read_pin(PORTF, 4) == PUHIGH && !switch_F4_held) {
 
             delay(80000);
-            if (read_pin(PORTF, 4) == PUHIGH && !switch4_held) {
+            if (read_pin(PORTF, 4) == PUHIGH && !switch_F4_held) {
 
-                switch4_held = 1;
+                switch_F4_held = 1;
                 led_state = (led_state + 4 - 1) % 4;
 
             }
@@ -307,8 +313,9 @@ void lab4A_task2() {
 
 void lab4A_task1() {
 
-    int8 switch0_held = 0;
-    int8 switch4_held = 0;
+    for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT); // LED pins set as output
+    DIO_init_f(PORTF, 0, IN, PUR); DIO_init_f(PORTF, 4, IN, PUR); // Switch pins set as input in PUR mode
+    int8 switch_F0_held = 0, switch_F4_held = 0; // Variables to store the state of the two PORTF switches 
 
     while (1) {
 
@@ -316,41 +323,41 @@ void lab4A_task1() {
         if (read_pin(PORTF, 0) == PULOW) {
 
             delay(80000); // Delay to soft-debounce then re-check; if still off, remove "held" state
-            if (read_pin(PORTF, 0) == PULOW) switch0_held = 0;
+            if (read_pin(PORTF, 0) == PULOW) switch_F0_held = 0;
 
         }
 
         if (read_pin(PORTF, 4) == PULOW) {
 
             delay(80000);
-            if (read_pin(PORTF, 0) == PULOW) switch4_held = 0;
+            if (read_pin(PORTF, 4) == PULOW) switch_F4_held = 0;
 
         }
 
         // Write on PORTF pin3 (green LED) HIGH if both switches are held, otherwise LOW
-        write_pin(PORTF, 3, switch0_held && switch4_held ? HIGH : LOW);
+        write_pin(PORTF, 3, (switch_F0_held && switch_F4_held) ? HIGH : LOW);
 
         // If PORTF pin0/4 (aka switch1/2) is on (pull-up mode) for the first time (i.e., not currently held)
         // Perform the soft-debounce check, set their "held" state, then toggle their respective LED (red, blue)
-        if (read_pin(PORTF, 0) == PUHIGH && !switch0_held) {
+        if (read_pin(PORTF, 0) == PUHIGH && !switch_F0_held) {
 
             delay(80000);
-            if (read_pin(PORTF, 0) == PUHIGH && !switch0_held) {
+            if (read_pin(PORTF, 0) == PUHIGH && !switch_F0_held) {
 
-                switch0_held = 1;
-                tgl_bit(GPIO_PORTF_DATA_R, 1); // TODO: Needs to be abstracted in MCAL layer
+                switch_F0_held = 1;
+                tgl_bit(GPIO_PORTF_DATA_R, 1); // TODO: Toggling needs to be abstracted in MCAL layer
 
             }
 
         }
 
-        if (read_pin(PORTF, 4) == PUHIGH && !switch4_held) {
+        if (read_pin(PORTF, 4) == PUHIGH && !switch_F4_held) {
 
             delay(80000);
-            if (read_pin(PORTF, 4) == PUHIGH && !switch4_held) {
+            if (read_pin(PORTF, 4) == PUHIGH && !switch_F4_held) {
 
-                switch4_held = 1;
-                tgl_bit(GPIO_PORTF_DATA_R, 2); // TODO: Needs to be abstracted in MCAL layer
+                switch_F4_held = 1;
+                tgl_bit(GPIO_PORTF_DATA_R, 2); // TODO: Toggling needs to be abstracted in MCAL layer
 
             }
 
@@ -362,6 +369,9 @@ void lab4A_task1() {
 
 void lab3R_task1() {
 
+    for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT); // LED pins set as output
+    DIO_init_f(PORTF, 0, IN, PUR); DIO_init_f(PORTF, 4, IN, PUR); // Switch pins set as input in PUR mode
+
     while (1) {
 
         write_pin(PORTF, 1, !read_pin(PORTF, 0));
@@ -372,6 +382,8 @@ void lab3R_task1() {
 }
 
 void lab3B_task2() {
+
+    for (int pin = 1; pin <= 3; pin++) DIO_init(PORTF, pin, OUT);
 
     while (1) {
 
@@ -389,32 +401,28 @@ void lab3B_task2() {
 
 }
 
+void lab3A_tasks() { // Old manual code w/o abstraction layers (tasks 1 & 2)
 
-// Old manual code w/o abstraction layers - Lab 3A_task1 + 3A_task2
-// int main() {
+    SYSCTL_RCGCGPIO_R |= 0x20; // Activating the clock on Port F
+    while ((SYSCTL_PRGPIO_R & 0x20) == 0); // Ensure activation
+    GPIO_PORTF_LOCK_R = 0x4C4F434B; // Unlock port F registers
+    GPIO_PORTF_CR_R = 0x1F; // Allow changes in first 5 pins
+    GPIO_PORTF_DIR_R = 0xE; // Set direction of LED pins out
+    GPIO_PORTF_PUR_R = 0x11; // Setting switches as pull-up
+    GPIO_PORTF_DEN_R = 0x1F; // Enabling digital operations
 
-//     SYSCTL_RCGCGPIO_R |= 0x20; // Activating the clock on Port F
-//     while ((SYSCTL_PRGPIO_R & 0x20) == 0); // Ensure activation
-//     GPIO_PORTF_LOCK_R = 0x4C4F434B; // Unlock port F registers
-//     GPIO_PORTF_CR_R = 0x1F; // Allow changes in first 5 pins
-//     GPIO_PORTF_DIR_R = 0xE; // Set direction of LED pins out
-//     GPIO_PORTF_PUR_R = 0x11; // Setting switches as pull-up
-//     GPIO_PORTF_DEN_R = 0x1F; // Enabling digital operations
+    while (1) { // System infinite loop
 
-//     while (1) { // System infinite loop
+        for (int j = 0; j < 8; j++) { // Looping through the eight states of RGB
 
-//         for (int j = 0; j < 8; j++) { // Looping through the eight states of RGB
+            for (volatile long long int i = 0; i < 256000; i++); // With delay
+            GPIO_PORTF_DATA_R += 0x2;
 
-//             for (volatile long long int i = 0; i < 256000; i++); // With delay
-//             GPIO_PORTF_DATA_R += 0x2;
+        }
+        // Then, after a longer delay, turn all the lights off
+        for (volatile long long int i = 0; i < 512000; i++);
+        GPIO_PORTF_DATA_R &= !(0xE);
 
-//         }
-//         // Then, after a longer delay, turn all the lights off
-//         for (volatile long long int i = 0; i < 512000; i++);
-//         GPIO_PORTF_DATA_R &= !(0xE);
+    }
 
-//     }
-
-//     return 0;
-
-// }
+}
