@@ -1,4 +1,5 @@
 #include "MCAL/DIO/DIO.h" // Header file containing the DIO abstraction layer functions and definitions
+#include "MCAL/SYSTICK/SYSTICK.h" // Header file containing the SYSTICK abstraction layer ^
 #include "HAL/KeyPad.h" // Header file containing the Keypad interfacing implementation
 #include "HAL/LCD.h" // Header file containing the LCD screen interfacing implementation
 #include "queue.h" // Linked list queue data structure to be used in simple calculator
@@ -13,6 +14,7 @@ void lab4R_task1();
 void lab4R_task2();
 void lab5B_task1();
 void lab5B_task2();
+void lab7R_task3();
 
 void main() {
 
@@ -24,7 +26,34 @@ void main() {
     // lab4R_task1();
     // lab4R_task2();
     // lab5B_task1();
-    lab5B_task2();
+    // lab5B_task2();
+    lab7R_task3();
+
+}
+
+void lab7R_task3() { // Implicitly includes tasks 1 and 2
+
+    // Initiate DIO, the three LEDs
+    DIO_init(PORTF, 1, OUT);
+    DIO_init(PORTF, 2, OUT);
+    DIO_init(PORTF, 3, OUT);
+
+    // Initiate SYSTICK
+    SysTickDisable(); // First, disable it... just in case
+    SysTickPeriodSet(500); // Next, set its period in milliseconds
+    SysTickEnable(); // Then start counting down
+
+    while (1) {
+
+        if (SysTickTimeout()) { // Keep polling for the timeout flag, toggle upon timeout
+
+            tgl_bit(GPIO_PORTF_DATA_R, 1);
+            tgl_bit(GPIO_PORTF_DATA_R, 2);
+            tgl_bit(GPIO_PORTF_DATA_R, 3);
+
+        }
+
+    }
 
 }
 
