@@ -53,9 +53,8 @@ Mkfile.old
 dkms.conf
 
 # Media files
-# *.mp4
-# *.mkv
-# Nevermind :)
+*.mp4
+*.mkv
 
 # Workspace Configuration files
 .vscode

@@ -1,0 +1,8 @@
+TL;DR: Existing demonstration videos have been re-uploaded in "issues" and removed from this folder, and any new demonstration videos will be uploaded there directly
+
+
+Hi
+This used to be the directory in which we'd upload demonstration videos for all tasks concerning lab progress and reports
+However, this turned out to be very inefficient and infeasible on the long run; GitHub is not the most convenient for videos on the repository
+Accordingly, all existing demonstration videos have been removed from this folder and re-uploaded as "issues" in the repository (allows media playback)
+Additionally, any future demonstration videos will be uploaded as issues directly from this point onwards. Media files are now in the .gitignore of this repository
