@@ -1,0 +1,14 @@
+TivaWare*
+lab6.c
+lab8.c
+lab9.c
+lab10.c
+*.ewt
+*.eww
+*.ewp
+*.ewd
+*.dep
+settings
+Debug
+KEIL
+.vscode
