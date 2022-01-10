@@ -14,6 +14,8 @@ typedef enum { ONE_SHOT_DOWN, ONE_SHOT_UP, PERIODIC_DOWN, PERIODIC_UP, RTC } TIM
 void TIMER32_ms_init(TIMER32_base, TIMER32_config, uint16_t ms, void (*timeout_handler)(void));
 void TIMER32_register_timeout_interrupt(TIMER32_base, void (*timeout_handler)(void));
 void TIMER32_clear_timeout_flag(TIMER32_base);
+
+uint16_t TIMER32_get_remaining_ms(TIMER32_base);
 void TIMER32_start(TIMER32_base);
 void TIMER32_resume(TIMER32_base);
 void TIMER32_pause(TIMER32_base);

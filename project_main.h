@@ -1,6 +1,10 @@
 #ifndef PROJECT_MAIN_H
 #define PROJECT_MAIN_H
 
+#ifndef PART_TM4C123GH6PM
+#define PART_TM4C123GH6PM
+#endif
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "inc/hw_ints.h"
@@ -10,6 +14,7 @@
 #include "TLSFSM.h"
 
 #include "GPIO.h"
+#include "UART0.h"
 #include "TIMER32.h"
 #include "SYSTICK_debounce.h"
 

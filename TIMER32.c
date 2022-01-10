@@ -45,6 +45,12 @@ void TIMER32_clear_timeout_flag(TIMER32_base base) {
 
 }
 
+uint16_t TIMER32_get_remaining_ms(TIMER32_base base) {
+
+    return (uint16_t) ((TimerValueGet(_map_port(base), TIMER_A) + 1) / 16000);
+
+}
+
 void TIMER32_start(TIMER32_base base) { TimerEnable(_map_port(base), TIMER_A); }
 void TIMER32_resume(TIMER32_base base) { TimerEnable(_map_port(base), TIMER_A); }
 void TIMER32_pause(TIMER32_base base) { TimerDisable(_map_port(base), TIMER_A); }

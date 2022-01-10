@@ -9,6 +9,7 @@ bool ped2_LED_flashing = false;
 
 // When we've just started, there is no current state
 // However, the next state is the one we start from
+//
 uint8_t current_state, next_state = STARTING_STATE;
 
 TrafficLightState tls[NUM_OF_STATES] = {
@@ -70,6 +71,9 @@ void main() {
     GPIO_register_interrupt(PORTC, PIN7, RISING_EDGE, ped1_btn_isr);
     GPIO_register_interrupt(PORTD, PIN6, RISING_EDGE, ped2_btn_isr);
 
+    // UART Communication @baudrate:9600
+    UART0_init(9600); // UART0 is the built-in UART port for USB comm
+
     // Adjusting Priorities
     IntPrioritySet(INT_GPIOA, 0x20);
     IntPrioritySet(INT_GPIOB, 0x20);
@@ -77,6 +81,7 @@ void main() {
     IntPrioritySet(INT_GPIOD, 0x20);
     IntPrioritySet(INT_GPIOE, 0x20);
     IntPrioritySet(INT_GPIOF, 0x20);
+    // IntPrioritySet(INT_UART0, 0x20);
     IntPrioritySet(INT_TIMER0A, 0x20);
     IntPrioritySet(INT_TIMER1A, 0x20);
     IntPrioritySet(INT_TIMER2A, 0x20);
@@ -93,10 +98,31 @@ void main() {
     // -------------------------------------------------------------------------
 
     proceed_to_next_tls();
+    uint8_t prev_state = 255;
     while (true) {
 
-        // UART reporting changes in state to PC
+        if (prev_state != current_state) {
 
+            uint16_t t0 = TIMER32_get_remaining_ms(TIMER0) + 1, div = 10000;
+
+            prev_state = current_state;
+
+            if (current_state < 6) { // i.e., a normal flow state
+
+                UART0_send_string("\n\n\rCurrently at state #");
+                UART0_send_char('0' + current_state);
+                UART0_send_string(", next state in ");
+                do { UART0_send_char('0' + (t0 / div)); t0 %= div; } while (div /= 10);
+                UART0_send_string("ms approximately.");
+
+            } else { // otherwise, a flow interrupt state
+
+                UART0_send_string("\n\n\rPre-empted to interrupt flow, now in state #");
+                UART0_send_char('0' + current_state);
+
+            }
+
+        }
 
     }
 
