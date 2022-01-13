@@ -81,7 +81,7 @@ void main() {
     IntPrioritySet(INT_GPIOD, 0x20);
     IntPrioritySet(INT_GPIOE, 0x20);
     IntPrioritySet(INT_GPIOF, 0x20);
-    // IntPrioritySet(INT_UART0, 0x20);
+    // IntPrioritySet(INT_UART0, 0x20); // TODO: Remove if planning to use UART0 interrupts
     IntPrioritySet(INT_TIMER0A, 0x20);
     IntPrioritySet(INT_TIMER1A, 0x20);
     IntPrioritySet(INT_TIMER2A, 0x20);
@@ -103,6 +103,7 @@ void main() {
 
         if (prev_state != current_state) {
 
+            // The +1 is to cover up for the ticks that elapse since the state changes
             uint16_t t0 = TIMER32_get_remaining_ms(TIMER0) + 1, div = 10000;
 
             prev_state = current_state;
@@ -111,7 +112,10 @@ void main() {
 
                 UART0_send_string("\n\n\rCurrently at state #");
                 UART0_send_char('0' + current_state);
-                UART0_send_string(", next state in ");
+                UART0_send_string(", next state in");
+                // Get rid of leading zeroes first by sending spaces in their place
+                while ((t0 / div) == 0) { UART0_send_char(' '); t0 %= div; div /= 10; }
+                // Then send digit by digit
                 do { UART0_send_char('0' + (t0 / div)); t0 %= div; } while (div /= 10);
                 UART0_send_string("ms approximately.");
 
@@ -119,6 +123,22 @@ void main() {
 
                 UART0_send_string("\n\n\rPre-empted to interrupt flow, now in state #");
                 UART0_send_char('0' + current_state);
+
+            }
+
+            switch (current_state) {
+
+                case 0: UART0_send_string("\n\r- No cars passing, EW pedestrians should hurry up."); break;
+                case 1: UART0_send_string("\n\r- NS cars passing, NS pedestrians are passing."); break;
+                case 2: UART0_send_string("\n\r- NS cars slowing, NS pedestrians are passing."); break;
+                case 3: UART0_send_string("\n\r- No cars passing, NS pedestrians should hurry up."); break;
+                case 4: UART0_send_string("\n\r- EW cars passing, EW pedestrians are passing."); break;
+                case 5: UART0_send_string("\n\r- EW cars slowing, EW pedestrians are passing."); break;
+                case 6: UART0_send_string("\n\r- EW pedestrians requested passage; stop NS cars."); break;
+                case 7: UART0_send_string("\n\r- EW pedestrians should hurry up; NS cars continuing soon..."); break;
+                case 8: UART0_send_string("\n\r- NS pedestrians requested passage; stop EW cars."); break;
+                case 9: UART0_send_string("\n\r- NS pedestrians should hurry up; EW cars continuing soon..."); break;
+                default: UART0_send_string("\n\rThis is an illegal state... Something went wrong!"); break;
 
             }
 

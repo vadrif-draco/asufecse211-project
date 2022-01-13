@@ -19,10 +19,14 @@
 #include "SYSTICK_debounce.h"
 
 // State Enforcer:
-// Propagtes state's outputs; calls state's action; sets next state as current state's next state.
+// 1. Cycles states
+// 2. Propagtes current state's outputs
+// 3. Calls current state's transition action
+//
 void proceed_to_next_tls();
 
 // State Actions and ISRs
+
 void state0_action();
 void state1_action();
 void state2_action();
@@ -36,13 +40,16 @@ void background_ped_btn_action2();
 void ped1_btn_isr();
 void ped2_btn_isr();
 
-// Re-configure timer per current state, interrupt flag is cleared implicitly
+// Re-configure timer as per current state's delay_ms value, interrupt flag is cleared implicitly
+//
 void restart_main_timer();
 
-// Propagates outputs to GPIO pins of concern (static on/off or flashing)
+// Propagates current state's outputs to GPIO pins of concern (either on/off or in flashing mode)
+//
 void propagate_outputs();
 
-// Responsible for flashing GPIO pins when needed
+// Responsible for flashing GPIO pins when defined by state to be in flashing mode
+//
 void flasher();
 
 #endif /* PROJECT_MAIN_H */

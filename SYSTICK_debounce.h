@@ -6,10 +6,13 @@
 
 #include "driverlib/systick.h"
 
-static bool waiting_for_debounce = true;
-
+// Function to setup SYSTICK for debounce purposes with provided duration in ms
+//
 void SYSTICK_debounce_ms_init(uint8_t);
+
+// Blocking Function to start the debounce check
+// Halts processing for the specified period of time in SYSTICK_debounce_ms_init
+//
 void SYSTICK_debounce_wait();
-void SYSTICK_debounce_isr();
 
 #endif /* SYSTICK_DEBOUNCE_H */

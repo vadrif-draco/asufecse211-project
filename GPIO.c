@@ -8,7 +8,6 @@ static uint32_t _map_int_flag(GPIO_pin);
 static uint32_t _map_int_type(GPIO_int_trigger);
 static uint8_t _map_pin(GPIO_pin);
 
-
 void GPIO_init(GPIO_base base, GPIO_pin pin, GPIO_dir direction) {
 
     // 1. Run Clock Gating to enable GPIO Port
@@ -38,8 +37,19 @@ void GPIO_register_interrupt(GPIO_base base, GPIO_pin pin, GPIO_int_trigger trig
 
 }
 
-void GPIO_disable_interrupt(GPIO_base base, GPIO_pin pin) { GPIOIntDisable(_map_port(base), _map_int_flag(pin)); }
-void GPIO_enable_interrupt(GPIO_base base, GPIO_pin pin) { GPIOIntEnable(_map_port(base), _map_int_flag(pin)); }
+void GPIO_disable_interrupt(GPIO_base base, GPIO_pin pin) {
+
+    GPIOIntClear(_map_port(base), _map_int_flag(pin));
+    GPIOIntDisable(_map_port(base), _map_int_flag(pin));
+
+}
+
+void GPIO_enable_interrupt(GPIO_base base, GPIO_pin pin) {
+
+    GPIOIntClear(_map_port(base), _map_int_flag(pin));
+    GPIOIntEnable(_map_port(base), _map_int_flag(pin));
+
+}
 
 void GPIO_clear_flag(GPIO_base base, GPIO_pin pin) {
 
@@ -65,6 +75,7 @@ void GPIO_toggle_pin(GPIO_base base, GPIO_pin pin) {
 
 }
 
+// The following mapping functions map our custom enums with TivaWare's
 
 uint32_t _map_port(GPIO_base base) {
 

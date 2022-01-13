@@ -55,6 +55,7 @@ void TIMER32_start(TIMER32_base base) { TimerEnable(_map_port(base), TIMER_A); }
 void TIMER32_resume(TIMER32_base base) { TimerEnable(_map_port(base), TIMER_A); }
 void TIMER32_pause(TIMER32_base base) { TimerDisable(_map_port(base), TIMER_A); }
 
+// Mapping functions to map our custom enums to TivaWare's
 
 uint32_t _map_port(TIMER32_base base) {
 

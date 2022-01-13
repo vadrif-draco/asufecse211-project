@@ -3,14 +3,14 @@
 
 #include <stdint.h>
 
-// Moore FSM Structure for Traffic Light State (TLS)
-
-// output: the LEDs to turn on
-// delay_ms: self-explanatory...
-// next_state: the index of the next state in the states vector
-// action: the function to be executed when this state is over, if any (could be none)
-
-typedef struct {
+// Moore Finite State Machine (FSM) Struct representing the Traffic Light State (TLS)
+//
+// output: 16-bit value resembling the states of the system LEDs in terms of on/off/flashing
+// delay_ms: The delay in ms after which this state naturally transitions to the next state
+// next_state: The index of the next state in the states vector that is to be transitioned to
+// action: The function to be executed when this state naturally transitions to its following one
+//
+typedef struct TrafficLightState {
 
     uint16_t output;
     uint16_t delay_ms;
